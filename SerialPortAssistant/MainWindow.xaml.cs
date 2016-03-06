@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
 
+
 namespace SerialPortAssistant
 {
     /// <summary>
@@ -25,13 +26,72 @@ namespace SerialPortAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
+       
+
+        private SerialPort comm = new SerialPort();
+        private long send_count = 0;
+        private long receive_count = 0;
+        private StringBuilder builder = new StringBuilder();
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private SerialPort comm = new SerialPort();
+        private void load_Loaded(object sender, RoutedEventArgs e)
+        {
+            string[] ports = SerialPort.GetPortNames();
+            Array.Sort(ports);
+            if (ports.Length != 0)
+                combo_Choose_serial.Text = ports[0];
 
+                combo_BaudRate.Text= "9600";
+                combo_Choose_serial.Items.Add(ports);
+                combo_Choose_serial.SelectedIndex = combo_Choose_serial.Items.Count > 0 ? 0 : -1;
+                combo_BaudRate.SelectedIndex = combo_BaudRate.Items.IndexOf("9600");
+            
+
+            comm.NewLine = "/r/n";
+            comm.RtsEnable = true;
+            comm.DataReceived += comm_DataReceived;
+            this.btn_Open.Content = comm.IsOpen ? "关闭端口" : "打开端口";
+            this.btn_Open.IsEnabled = comm.IsOpen;
+        }
+
+
+        void comm_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            int n = comm.BytesToRead;
+            byte[] buf = new byte[n];
+            receive_count += n;
+            comm.Read(buf, 0, n);
+            builder.Remove(0, builder.Length);
+
+            this.Dispatcher.BeginInvoke((EventHandler)(delegate
+            {
+
+                //处理16进制显示
+                if (checkBoxSHex.IsEnabled)
+                {
+                    foreach (byte b in buf)
+                    {
+                        builder.Append(b.ToString("X2") + " ");
+                    }
+                }
+                //处理ASCII显示
+                else
+                {
+                    builder.Append(Encoding.ASCII.GetString(buf));
+                }
+                //将接收到的数据追加到文本框末端，并将文本框滚动到末端
+                this.Receive_ContentBox.AppendText(builder.ToString());
+                //修改接收计数
+                this.label_Rec_Count.Content = "接收计数" + receive_count.ToString();
+
+            }));
+            comm.Write(new byte[] { 0xFF, 0xFF, 0x04, 0x01, 0x01, 0x00, 0x00, 0xF9 }, 0, 8);
+  
+        }
        
 
         private void btn_Open_Click(object sender, RoutedEventArgs e)
@@ -84,14 +144,54 @@ namespace SerialPortAssistant
 
             if (checkBoxSHex.IsEnabled)
             {
-                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[/da-f]{2}");
+                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[/da-f]{2}");  //http://www.cnblogs.com/net515/archive/2012/05/30/2527142.html 解释该行。 http://zhidao.baidu.com/link?url=8FqHSbJquwIchwlIdmcJ6HmnIKsWQ5qsQkw8X24YPgzxJciQZYs-0y0xGWaKMTWPDiCKANJwIQWVP4z1fGN-P_
+                List<byte> buf = new List<byte>();
+                foreach (Match m in mc)
+                {
+                    buf.Add(byte.Parse(m.Value));
+                }
+
+                comm.Write(buf.ToArray(), 0, buf.Count);
+                n = buf.Count;
             }
+            else
+            {
+                if (checkBox.IsEnabled)
+                {
+                    comm.WriteLine(Send_ContentBox.Text);
+                    n = Send_ContentBox.Text.Length + 2;
+                }
+                else
+                {
+                    comm.Write(Send_ContentBox.Text);
+                    n = Send_ContentBox.Text.Length;
+                }
+            }
+            send_count += n;
+            label_Send_Count.Content = "发送计数：" + send_count.ToString();
         }
 
-    
+        private void btn_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            send_count = receive_count = 0;
+            label_Rec_Count.Content = "接收计数：0";
+            label_Send_Count.Content = "发送计数：0";
+        }
 
-        
+        private void combo_Choose_serial_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String[] ports = SerialPort.GetPortNames();
+            Array.Sort(ports);
+            combo_Choose_serial.Items.Clear();
+            combo_Choose_serial.Items.Add(ports);
+        }
+
+        private void combo_Choose_serial_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
 
        
+  
     }
 }
