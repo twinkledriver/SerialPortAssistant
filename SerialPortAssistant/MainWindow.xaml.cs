@@ -46,7 +46,15 @@ namespace SerialPortAssistant
                 combo_Choose_serial.Text = ports[0];
 
                 combo_BaudRate.Text= "9600";
-                combo_Choose_serial.Items.Add(ports);
+                
+                combo_Choose_serial.Items.Add(ports[0]);
+                combo_Choose_serial.Items.Add(ports[1]);
+                combo_BaudRate.Items.Add("9600");
+                combo_BaudRate.Items.Add("4800");
+
+
+               
+
                 combo_Choose_serial.SelectedIndex = combo_Choose_serial.Items.Count > 0 ? 0 : -1;
                 combo_BaudRate.SelectedIndex = combo_BaudRate.Items.IndexOf("9600");
             
@@ -55,7 +63,7 @@ namespace SerialPortAssistant
             comm.RtsEnable = true;
             comm.DataReceived += comm_DataReceived;
             this.btn_Open.Content = comm.IsOpen ? "关闭端口" : "打开端口";
-            this.btn_Open.IsEnabled = comm.IsOpen;
+            this.btn_Send.IsEnabled = comm.IsOpen;
         }
 
 
@@ -67,11 +75,12 @@ namespace SerialPortAssistant
             comm.Read(buf, 0, n);
             builder.Remove(0, builder.Length);
 
-            this.Dispatcher.BeginInvoke((EventHandler)(delegate
+            this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            
             {
 
                 //处理16进制显示
-                if (checkBoxSHex.IsEnabled)
+                if ((bool)checkBoxRHex.IsChecked)
                 {
                     foreach (byte b in buf)
                     {
@@ -130,19 +139,24 @@ namespace SerialPortAssistant
             this.btn_Open.Content = comm.IsOpen ? "关闭端口" : "打开端口";
             this.btn_Send.IsEnabled = comm.IsOpen;
         }
-        private void Receive_ContentBoxChanged(object sender, EventArgs e)
+
+        private void Receive_ContentBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
-            if (checkBox.IsEnabled)
-
-                this.Receive_ContentBox.TextWrapping=TextWrapping.Wrap;
+            if ((bool)checkBoxAN.IsChecked)
+            {
+                this.Receive_ContentBox.TextWrapping = TextWrapping.Wrap;
+            }
+            else
+            {
+                this.Receive_ContentBox.TextWrapping = TextWrapping.NoWrap;
+            }
         }
 
         private void btn_Send_Click_1(object sender, RoutedEventArgs e)
         {
             int n = 0;
 
-            if (checkBoxSHex.IsEnabled)
+            if ((bool)checkBoxSHex.IsChecked)
             {
                 MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[/da-f]{2}");  //http://www.cnblogs.com/net515/archive/2012/05/30/2527142.html 解释该行。 http://zhidao.baidu.com/link?url=8FqHSbJquwIchwlIdmcJ6HmnIKsWQ5qsQkw8X24YPgzxJciQZYs-0y0xGWaKMTWPDiCKANJwIQWVP4z1fGN-P_
                 List<byte> buf = new List<byte>();
@@ -150,13 +164,12 @@ namespace SerialPortAssistant
                 {
                     buf.Add(byte.Parse(m.Value));
                 }
-
                 comm.Write(buf.ToArray(), 0, buf.Count);
-                n = buf.Count;
+                n = buf.Count;  
             }
             else
             {
-                if (checkBox.IsEnabled)
+                if ((bool)checkBox.IsChecked)
                 {
                     comm.WriteLine(Send_ContentBox.Text);
                     n = Send_ContentBox.Text.Length + 2;
@@ -164,32 +177,28 @@ namespace SerialPortAssistant
                 else
                 {
                     comm.Write(Send_ContentBox.Text);
-                    n = Send_ContentBox.Text.Length;
+                    n = Send_ContentBox.Text.Length;  
+                    
                 }
             }
-            send_count += n;
+            send_count+=n;
             label_Send_Count.Content = "发送计数：" + send_count.ToString();
         }
 
         private void btn_Clear_Click(object sender, RoutedEventArgs e)
         {
+          
             send_count = receive_count = 0;
             label_Rec_Count.Content = "接收计数：0";
             label_Send_Count.Content = "发送计数：0";
         }
 
-        private void combo_Choose_serial_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            String[] ports = SerialPort.GetPortNames();
-            Array.Sort(ports);
-            combo_Choose_serial.Items.Clear();
-            combo_Choose_serial.Items.Add(ports);
-        }
+      
 
-        private void combo_Choose_serial_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
+      
 
-        }
+      
+
 
        
   
