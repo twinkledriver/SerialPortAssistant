@@ -98,7 +98,7 @@ namespace SerialPortAssistant
                 this.label_Rec_Count.Content = "接收计数" + receive_count.ToString();
 
             }));
-            comm.Write(new byte[] { 0xFF, 0xFF, 0x04, 0x01, 0x01, 0x00, 0x00, 0xF9 }, 0, 8);
+          //  comm.Write(new byte[] { 0xFF, 0xFF, 0x04, 0x01, 0x01, 0x00, 0x00, 0xF9 }, 0, 8);
   
         }
        
@@ -158,13 +158,21 @@ namespace SerialPortAssistant
 
             if ((bool)checkBoxSHex.IsChecked)
             {
-                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[/da-f]{2}");  //http://www.cnblogs.com/net515/archive/2012/05/30/2527142.html 解释该行。 http://zhidao.baidu.com/link?url=8FqHSbJquwIchwlIdmcJ6HmnIKsWQ5qsQkw8X24YPgzxJciQZYs-0y0xGWaKMTWPDiCKANJwIQWVP4z1fGN-P_
-                List<byte> buf = new List<byte>();
+                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[\da-f]{2}");  //http://www.cnblogs.com/net515/archive/2012/05/30/2527142.html 解释该行。 http://zhidao.baidu.com/link?url=8FqHSbJquwIchwlIdmcJ6HmnIKsWQ5qsQkw8X24YPgzxJciQZYs-0y0xGWaKMTWPDiCKANJwIQWVP4z1fGN-P_
+
+                List<string> buf = new List<string>();
+                //List<string> buf = new List<string>();
                 foreach (Match m in mc)
                 {
-                    buf.Add(byte.Parse(m.Value));
+                    buf.Add((string)(m.Value));
+                    //System.Windows.Forms.MessageBox.Show(m.Value);
                 }
-                comm.Write(buf.ToArray(), 0, buf.Count);
+                
+               // string qq=buf.ToString();
+                // System.Windows.Forms.MessageBox.Show(m.Value);
+                string buf2 = string.Join(" ",(string[])buf.ToArray());
+                comm.Write(buf2);
+               // comm.Write(buf.ToArray(), 0, buf.Count);
                 n = buf.Count;  
             }
             else

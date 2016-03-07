@@ -17,7 +17,7 @@
         <Button Name="btn_Clear" Content="清除数据" HorizontalAlignment="Left" Margin="233,212,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.12,0.227" Click="btn_Clear_Click"/>
         <Button Name="btn_Eixt" Content="退出" HorizontalAlignment="Left" Margin="232,252,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.28,-1.227"/>
         <CheckBox Name="checkBox" Content="自动换行" HorizontalAlignment="Left" Margin="53,274,0,0" VerticalAlignment="Top"/>
-        <CheckBox Name="checkBoxSHex" Content="十六进制发送" HorizontalAlignment="Left" Margin="138,274,0,0" VerticalAlignment="Top"/>
+        <CheckBox Name="checkBoxSHex" Content="十六进制发送" HorizontalAlignment="Left" Margin="138,274,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <Label Name="label_Rec_Count" Content="接收计数：" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="4.175,0.5" Margin="126,0,0,0"/>
         <Label Name="label_Send_Count" Content="发送计数：" HorizontalAlignment="Left" Margin="126,117,0,0" VerticalAlignment="Top"/>
         <CheckBox Name="checkBoxRHex" Content="十六进制显示" HorizontalAlignment="Left" Margin="339,36,0,0" VerticalAlignment="Top"/>
