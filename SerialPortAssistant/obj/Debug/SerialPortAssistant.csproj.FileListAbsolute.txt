@@ -11,3 +11,16 @@ d:\Documents\Visual Studio 2012\Projects\SerialPortAssistant\SerialPortAssistant
 d:\Documents\Visual Studio 2012\Projects\SerialPortAssistant\SerialPortAssistant\obj\Debug\SerialPortAssistant.csproj.GenerateResource.Cache
 d:\Documents\Visual Studio 2012\Projects\SerialPortAssistant\SerialPortAssistant\obj\Debug\SerialPortAssistant.exe
 d:\Documents\Visual Studio 2012\Projects\SerialPortAssistant\SerialPortAssistant\obj\Debug\SerialPortAssistant.pdb
+C:\Users\Administrator\Desktop\SerialPortAssistant\bin\Debug\SerialPortAssistant.exe.config
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.exe
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.pdb
+C:\Users\Administrator\Desktop\SerialPortAssistant\bin\Debug\SerialPortAssistant.exe
+C:\Users\Administrator\Desktop\SerialPortAssistant\bin\Debug\SerialPortAssistant.pdb
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\MainWindow.baml
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\MainWindow.g.cs
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\App.g.cs
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant_MarkupCompile.cache
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.g.resources
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.Properties.Resources.resources
+C:\Users\Administrator\Desktop\SerialPortAssistant\obj\Debug\SerialPortAssistant.csproj.GenerateResource.Cache

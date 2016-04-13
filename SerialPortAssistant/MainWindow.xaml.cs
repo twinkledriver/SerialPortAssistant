@@ -158,21 +158,26 @@ namespace SerialPortAssistant
 
             if ((bool)checkBoxSHex.IsChecked)
             {
-                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[\da-f]{2}");  //http://www.cnblogs.com/net515/archive/2012/05/30/2527142.html 解释该行。 http://zhidao.baidu.com/link?url=8FqHSbJquwIchwlIdmcJ6HmnIKsWQ5qsQkw8X24YPgzxJciQZYs-0y0xGWaKMTWPDiCKANJwIQWVP4z1fGN-P_
 
-                List<string> buf = new List<string>();
-                //List<string> buf = new List<string>();
+                MatchCollection mc = Regex.Matches(Send_ContentBox.Text, @"(?i)[\da-f]{2}");
+                List<byte> buf = new List<byte>();
                 foreach (Match m in mc)
                 {
-                    buf.Add((string)(m.Value));
-                    //System.Windows.Forms.MessageBox.Show(m.Value);
+                    int kk = Convert.ToByte(m.Value, 16);
+                    buf.Add(byte.Parse(kk.ToString()));
                 }
-                
-               // string qq=buf.ToString();
-                // System.Windows.Forms.MessageBox.Show(m.Value);
-                string buf2 = string.Join(" ",(string[])buf.ToArray());
-                comm.Write(buf2);
-               // comm.Write(buf.ToArray(), 0, buf.Count);
+
+                ////转换为数组之后发送
+                try
+                {
+                    comm.Write(buf.ToArray(), 0, buf.Count);
+                }
+                catch
+                {
+                    return;
+                }
+
+
                 n = buf.Count;  
             }
             else
